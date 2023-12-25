@@ -1,0 +1,50 @@
+server:
+  port: 8080 #server port
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: always
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/gateway_db
+    username: postgres
+    password: 123456
+
+  security:
+    oauth2:
+      resourceserver:
+        opaque-token:
+          introspection-uri: http://localhost:8081/user-service/api/oauth/check_token
+          client-id: myuser
+          client-secret: admin@123
+  allow:
+    cross:
+      origin:
+        urls: https://stackoverflow.com,https://stackexchange.com
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              ReactiveMongoTemplate: DEBUG
+        cache: TRACE
+        cloud:
+          sleuth: DEBUG
+    io.r2dbc.postgresql.QUERY: DEBUG # for queries
+    io.r2dbc.postgresql.PARAM: DEBUG # for parameters
